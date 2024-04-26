@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -51,8 +52,12 @@ public class UsersController {
             return ResponseEntity.ok(updateUser);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found.");
-        } catch (JsonProcessingException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Json failed.");
+        //} catch (JsonProcessingException e) {
+            //throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Json failed.");
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 
