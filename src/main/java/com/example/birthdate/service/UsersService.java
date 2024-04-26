@@ -6,14 +6,18 @@ import com.example.birthdate.mapper.UsersMapper;
 import com.example.birthdate.model.Users;
 import com.example.birthdate.repository.UsersRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.beanutils.BeanUtilsBean;
+import org.apache.commons.beanutils.Converter;
+import org.apache.commons.beanutils.converters.DateConverter;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -37,11 +41,13 @@ public class UsersService implements UsersServiceInterface {
     @Transactional
     @Override
     public UsersDto updateUser(Long id, UsersDto dto) throws JsonProcessingException {
-        Users user = userRepository.findById(dto.getId()).orElseThrow(EntityNotFoundException::new);
-        JsonNode patched = jsonPatch.apply(objectMapper.convertValue(user, JsonNode.class));
-
-         userRepository.save(objectMapper.treeToValue(patched, Users.class));
-         return usersMapper.toDto(user);
+        Users user = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        Converter converter = new DateConverter(null);
+        BeanUtilsBean beanUtilsBean = BeanUtilsBean.getInstance();
+        beanUtilsBean.getConvertUtils().register(converter, Date.class);
+        BeanUtils.copyProperties(user, dto);
+        userRepository.save(user);
+        return usersMapper.toDto(user);
     }
 
     @Transactional

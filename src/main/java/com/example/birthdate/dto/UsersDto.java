@@ -6,13 +6,16 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
 public class UsersDto {
-    @NotNull(groups = Update.class)
+    //@NotNull(groups = Update.class)
     private Long id;
     @NotBlank(groups = Save.class)
     @Email(message = "Email should be valid and unique.", groups = {Save.class, Update.class})
