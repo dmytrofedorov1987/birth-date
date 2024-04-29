@@ -3,17 +3,13 @@ package com.example.birthdate.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@Data
 public class UsersDto {
 
     private Long id;
@@ -41,5 +37,27 @@ public class UsersDto {
      * Checking for Update
      */
     public interface Update {
+    }
+
+    public UsersDto() {
+    }
+
+    public UsersDto(Long id, String email, String firstName, String lastName, LocalDate birthDate, String address, String phoneNumber) {
+        this.id = id;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDate = birthDate;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public UsersDto(String email, String firstName, String lastName, LocalDate birthDate, String address, String phoneNumber) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDate = birthDate;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
     }
 }

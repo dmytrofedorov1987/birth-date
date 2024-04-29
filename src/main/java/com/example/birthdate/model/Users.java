@@ -1,7 +1,9 @@
 package com.example.birthdate.model;
 
-import jakarta.persistence.*;
-import lombok.Data;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,4 +23,25 @@ public class Users {
     private String address;
     private String phoneNumber;
 
+    public Users() {
+    }
+
+    public Users(Long id, String email, String firstName, String lastName, LocalDate birthDate, String address, String phoneNumber) {
+        this.id = id;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDate = birthDate;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public Users(String email, String firstName, String lastName, LocalDate birthDate, String address, String phoneNumber) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDate = birthDate;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+    }
 }
