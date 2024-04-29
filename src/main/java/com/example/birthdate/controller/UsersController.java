@@ -3,19 +3,19 @@ package com.example.birthdate.controller;
 import com.example.birthdate.dto.UsersDto;
 import com.example.birthdate.exception.BirthDateRuntimeException;
 import com.example.birthdate.service.UsersService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -23,6 +23,8 @@ import java.time.Period;
 public class UsersController {
     @Value("${value.allowedAge}")
     private int allowedAge;
+    private final static Integer CURRENT_PAGE_DEFAULT = 0;
+    private final static Integer PAGE_SIZE_DEFAULT = 5;
     private final UsersService usersService;
 
     @PostMapping
@@ -52,25 +54,29 @@ public class UsersController {
             return ResponseEntity.ok(updateUser);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found.");
-        //} catch (JsonProcessingException e) {
-            //throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Json failed.");
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
         }
+
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable(value = "id") Long id,
-                                        @RequestBody @Validated UsersDto dto) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable(value = "id") Long id) {
         try {
-            UsersDto updateUser = usersService.updateUser(id, dto);
-            return ResponseEntity.ok(updateUser);
-        } catch (Exception e) {
+            usersService.deleteUser(id);
+            return ResponseEntity.ok(HttpStatus.OK);
+        } catch (EntityNotFoundException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found.");
         }
     }
 
-
+    @GetMapping("/search")
+    public ResponseEntity<?> searchByBirthDate(@RequestParam(name = "date_from") LocalDate from,
+                                               @RequestParam(name = "date_to") LocalDate to,
+                                               @RequestParam(name = "page_number") Optional<Integer> page) {
+        int currentPage = page.orElse(CURRENT_PAGE_DEFAULT);
+        if (currentPage < usersService.totalPages(from, to, PAGE_SIZE_DEFAULT)) {
+            return ResponseEntity.ok(usersService.findUsersByBirthDate(from, to, PageRequest.of(currentPage, PAGE_SIZE_DEFAULT)));
+        } else {
+            throw new BirthDateRuntimeException("Page Number is not correct.");
+        }
+    }
 }

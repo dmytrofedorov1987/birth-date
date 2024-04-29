@@ -2,6 +2,7 @@ package com.example.birthdate.service;
 
 import com.example.birthdate.dto.UsersDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.data.domain.Pageable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ public interface UsersServiceInterface {
 
     void deleteUser(Long id);
 
-    List<UsersDto> findUsersByBirthDate(LocalDate from, LocalDate to);
+    List<UsersDto> findUsersByBirthDate(LocalDate from, LocalDate to, Pageable pageable);
 
+    int totalPages(LocalDate from, LocalDate to, int size);
 }

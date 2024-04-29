@@ -6,6 +6,9 @@ import org.mapstruct.Mapper;
 
 import java.util.List;
 
+/**
+ * Interface for transfer entity to DTO.
+ */
 @Mapper(componentModel = "spring")
 public interface UsersMapper {
 

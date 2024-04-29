@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class UsersDto {
-    //@NotNull(groups = Update.class)
+
     private Long id;
     @NotBlank(groups = Save.class)
     @Email(message = "Email should be valid and unique.", groups = {Save.class, Update.class})
